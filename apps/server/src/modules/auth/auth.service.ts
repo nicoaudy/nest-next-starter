@@ -54,19 +54,22 @@ export class AuthService {
     }
 
     const userPayload = {
-      sub: user.id,
       email: user.email,
+      sub: user.id,
     };
 
     return {
-      accessToken: await this.jwt.signAsync(userPayload, {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION_TIME,
-        secret: process.env.JWT_SECRET,
-      }),
-      refreshToken: await this.jwt.signAsync(userPayload, {
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
-        secret: process.env.JWT_REFRESH_KEY,
-      }),
+      user,
+      accessToken: await this.generateToken(
+        userPayload,
+        process.env.ACCESS_TOKEN_EXPIRATION_TIME,
+        process.env.JWT_SECRET,
+      ),
+      refreshToken: await this.generateToken(
+        userPayload,
+        process.env.REFRESH_TOKEN_EXPIRATION_TIME,
+        process.env.JWT_REFRESH_KEY,
+      ),
     };
   }
 
@@ -77,14 +80,26 @@ export class AuthService {
     };
 
     return {
-      accessToken: await this.jwt.signAsync(payload, {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION_TIME,
-        secret: process.env.JWT_SECRET,
-      }),
-      refreshToken: await this.jwt.signAsync(payload, {
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
-        secret: process.env.JWT_REFRESH_KEY,
-      }),
+      user,
+      accessToken: await this.generateToken(
+        payload,
+        process.env.ACCESS_TOKEN_EXPIRATION_TIME,
+        process.env.JWT_SECRET,
+      ),
+      refreshToken: await this.generateToken(
+        payload,
+        process.env.REFRESH_TOKEN_EXPIRATION_TIME,
+        process.env.JWT_REFRESH_KEY,
+      ),
     };
+  }
+
+  private async generateToken(payload, expiresIn: string, secret: string) {
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn,
+      secret,
+    });
+
+    return token;
   }
 }

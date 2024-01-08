@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm run --parallel dev",
-    "build": "pnpm run --parallel build",
+    "format": "pnpm run --parallel format",
+    "build": "pnpm run format && pnpm run --parallel build",
     "start": "pnpm run --parallel start",
     "build:server": "pnpm --filter server build",
     "build:web": "pnpm --filter web build",

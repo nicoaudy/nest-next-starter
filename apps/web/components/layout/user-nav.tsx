@@ -14,6 +14,7 @@ import { Settings2 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 export function UserNav() {
   const { data: session } = useSession();
+
   if (session) {
     return (
       <DropdownMenu>
