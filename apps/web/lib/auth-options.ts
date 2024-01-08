@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Session } from "next-auth";
 import CredentialProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
 
       return Promise.resolve(token);
     },
-    session: async ({ session, token }) => {
+    session: async ({ session, token }: { session: Session, token: any }) => {
       if (token) {
         session.user = token.user;
       }

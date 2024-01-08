@@ -13,13 +13,17 @@ const axios_interceptor = axios.create({
 
 const refreshUserToken = async (token: string) => {
   try {
-    const response = await axiosInstance.post("/auth/refresh", {}, {
-      headers: {
-        'Authorization': `Refresh ${token}`
-      }
-    });
+    const response = await axiosInstance.post(
+      "/auth/refresh",
+      {},
+      {
+        headers: {
+          Authorization: `Refresh ${token}`,
+        },
+      },
+    );
 
-    const { data } = response.data
+    const { data } = response.data;
     return {
       accessToken: data?.accessToken,
       refreshToken: data?.refreshToken,
@@ -45,7 +49,9 @@ axios_interceptor.interceptors.request.use(
     if (session?.user?.accessToken) {
       const expired = isExpired(session?.user?.accessToken);
       if (expired) {
-        const refreshedData = await refreshUserToken(session?.user?.refreshToken);
+        const refreshedData = await refreshUserToken(
+          session?.user?.refreshToken,
+        );
         if (refreshedData.accessToken) {
           req.headers.Authorization = `Bearer ${refreshedData?.accessToken}`;
         }
@@ -54,7 +60,7 @@ axios_interceptor.interceptors.request.use(
 
     return req;
   },
-  (err) => Promise.reject(err)
+  (err) => Promise.reject(err),
 );
 
 export default axios_interceptor;
