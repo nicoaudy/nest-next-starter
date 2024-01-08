@@ -1,9 +1,7 @@
-// success: true => message, data
-// success: false => errorMessage, error
-export interface IResponse {
+export interface IResponse<T = any> {
   success: boolean;
   message: string;
   errorMessage: string;
-  data: any[];
+  data: T | T[];
   error: any;
 }

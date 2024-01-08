@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth-guard.guard';
 import { QueryDto } from '@/modules/user/dto/query.dto';
 import { IResponse } from '@/common/interfaces/response.interface';
 import { ResponseSuccess } from '@/common/dto/response.dto';
+import { User } from '@prisma/client';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -22,28 +23,28 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(@Query() query: QueryDto): Promise<IResponse> {
+  async findAll(@Query() query: QueryDto): Promise<IResponse<User[]>> {
     const users = await this.usersService.findAll(query);
     return new ResponseSuccess('USER.ALL', users);
   }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<IResponse> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<IResponse<User>> {
     const user = await this.usersService.create(createUserDto);
-    return new ResponseSuccess('USER.UPDATE', user);
+    return new ResponseSuccess('USER.CREATE', user);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<IResponse> {
+  async findOne(@Param('id') id: string): Promise<IResponse<User>> {
     const user = await this.usersService.findOne(id);
-    return new ResponseSuccess('USER.UPDATE', user);
+    return new ResponseSuccess('USER.SHOW', user);
   }
 
   @Put(':id')
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<IResponse> {
+  ): Promise<IResponse<User>> {
     const user = await this.usersService.update(id, updateUserDto);
     return new ResponseSuccess('USER.UPDATE', user);
   }

@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -25,27 +23,35 @@ export default class UsersService {
         ],
       },
       take: query.limit || 10,
-      skip: (query.page - 1) * (query.limit || 10),
+      skip: ((query.page || 1) - 1) * (query.limit || 10),
     });
 
     return users;
   }
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      const hash = await bcrypt.hash(createUserDto.password, saltRounds);
-      const user = await this.prisma.user.create({
-        data: {
-          name: createUserDto.name,
-          email: createUserDto.email,
-          password: hash,
-        },
-      });
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        email: createUserDto.email,
+      },
+    });
 
-      return user;
-    } catch (err: any) {
-      throw new HttpException(err, HttpStatus.BAD_REQUEST);
+    if (existingUser) {
+      throw new BadRequestException(
+        `User with email ${createUserDto.email} already exists`,
+      );
     }
+
+    const hash = await bcrypt.hash(createUserDto.password, saltRounds);
+    const user = await this.prisma.user.create({
+      data: {
+        name: createUserDto.name,
+        email: createUserDto.email,
+        password: hash,
+      },
+    });
+
+    return user;
   }
 
   async findOne(id: string) {

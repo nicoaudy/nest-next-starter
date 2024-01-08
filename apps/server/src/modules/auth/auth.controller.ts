@@ -22,7 +22,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  async register(@Body() payload: RegisterDto): Promise<IResponse> {
+  async register(@Body() payload: RegisterDto): Promise<IResponse<User>> {
     const register = await this.authService.register(payload);
     return new ResponseSuccess('AUTH.REGISTER', register);
   }
@@ -37,7 +37,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('/profile')
   @HttpCode(HttpStatus.OK)
-  async profile(@CurrentUser() user: User): Promise<IResponse> {
+  async profile(@CurrentUser() user: User): Promise<IResponse<User>> {
     return new ResponseSuccess('AUTH.PROFILE', user);
   }
 
