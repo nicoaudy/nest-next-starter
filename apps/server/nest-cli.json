@@ -6,11 +6,6 @@
     "deleteOutDir": true,
     "assets": [
       {
-        "include": "./common/json/**/*",
-        "outDir": "dist/src/",
-        "watchAssets": true
-      },
-      {
         "include": "./mail/templates/**/*",
         "outDir": "dist/src/",
         "watchAssets": true

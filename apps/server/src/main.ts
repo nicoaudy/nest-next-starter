@@ -1,7 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
 
 import 'reflect-metadata';
 import { Logger, ValidationPipe } from '@nestjs/common';

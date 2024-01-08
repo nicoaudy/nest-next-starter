@@ -35,7 +35,7 @@ export class UsersController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<IResponse> {
-    const user = await this.usersService.findOne(+id);
+    const user = await this.usersService.findOne(id);
     return new ResponseSuccess('USER.UPDATE', user);
   }
 
@@ -44,13 +44,13 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<IResponse> {
-    const user = await this.usersService.update(+id, updateUserDto);
+    const user = await this.usersService.update(id, updateUserDto);
     return new ResponseSuccess('USER.UPDATE', user);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<IResponse> {
-    await this.usersService.remove(+id);
+    await this.usersService.remove(id);
     return new ResponseSuccess('USER.DELETE');
   }
 }

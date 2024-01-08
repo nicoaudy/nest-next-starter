@@ -13,9 +13,9 @@ import { LoginDto, RegisterDto } from './dto/auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth-guard.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { RefreshJwtGuard } from './guards/jwt-refresh-guard.guard';
-import { User } from '@/types';
 import { ResponseSuccess } from '@/common/dto/response.dto';
 import { IResponse } from '@/common/interfaces/response.interface';
+import { User } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {

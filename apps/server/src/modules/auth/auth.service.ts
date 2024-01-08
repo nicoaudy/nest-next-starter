@@ -1,14 +1,12 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import * as bcrypt from 'bcrypt';
-import { Knex } from 'knex';
-import { InjectModel } from 'nest-knexjs';
+import { PrismaService } from '@/common/prisma.service';
 
 export const saltRounds = 10;
 
@@ -16,42 +14,35 @@ export const saltRounds = 10;
 export class AuthService {
   constructor(
     private readonly jwt: JwtService,
-    @InjectModel() private knex: Knex,
+    private readonly prisma: PrismaService,
   ) {}
 
   async register(payload: RegisterDto) {
-    const exist = await this.knex('users')
-      .where('email', payload.email)
-      .first();
+    const exist = await this.prisma.user.findFirst({
+      where: { email: payload.email },
+    });
 
     if (exist) {
       throw new BadRequestException('User already exists');
     }
 
-    const trx = await this.knex.transaction();
-    try {
-      const hash = await bcrypt.hash(payload.password, saltRounds);
+    const hash = await bcrypt.hash(payload.password, saltRounds);
+    const user = await this.prisma.user.create({
+      data: {
+        name: payload.name,
+        email: payload.email,
+        password: hash,
+        active: true,
+      },
+    });
 
-      const user = await trx('users').insert(
-        {
-          name: payload.name,
-          email: payload.email,
-          password: hash,
-          active: true,
-        },
-        '*',
-      );
-
-      trx.commit();
-      return user[0];
-    } catch (error) {
-      trx.rollback();
-      throw new InternalServerErrorException(error);
-    }
+    return user;
   }
 
   async login(payload: LoginDto) {
-    const user = await this.knex('users').where('email', payload.email).first();
+    const user = await this.prisma.user.findFirst({
+      where: { email: payload.email },
+    });
 
     if (!user) {
       throw new UnauthorizedException('User not exist');
