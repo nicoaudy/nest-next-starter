@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +10,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 import { Settings2 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 export function UserNav() {
@@ -19,14 +19,10 @@ export function UserNav() {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <span
-            className={cn(
-              "flex items-center rounded-md px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground",
-            )}
-          >
+          <Button variant="ghost" className="w-full">
             <Settings2 className="mr-2 h-4 w-4" />
             <span>Settings</span>
-          </span>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">

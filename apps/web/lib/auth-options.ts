@@ -46,7 +46,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
-        // If there's a user, return a modified token with user and sub properties
         return Promise.resolve({
           ...token,
           user,
@@ -54,12 +53,10 @@ export const authOptions: NextAuthOptions = {
         });
       }
 
-      // If there's no user, return the original token
       return Promise.resolve(token);
     },
     session: async ({ session, token }) => {
       if (token) {
-        // Update the session with user data from the token
         session.user = token.user;
       }
       return Promise.resolve(session);
