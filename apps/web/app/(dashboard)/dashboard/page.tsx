@@ -10,12 +10,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import axios_interceptor from "@/lib/axios/axios-interceptors";
+import axios from "@/lib/axios";
 import { AxiosError } from "axios";
 
 const getUser = async () => {
   try {
-    const { data } = await axios_interceptor.get("/auth/profile");
+    const { data } = await axios.get("/auth/profile");
 
     return data.data;
   } catch (error) {

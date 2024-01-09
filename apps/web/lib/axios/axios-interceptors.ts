@@ -1,10 +1,9 @@
 import axios from "axios";
-import { getServerSession } from "next-auth";
 import axiosInstance from "./axios-instance";
 import { isExpired } from "../utils";
-import { authOptions } from "../auth-options";
+import { getCurrentUser } from "../session";
 
-const axios_interceptor = axios.create({
+const axiosInterceptors = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL,
   headers: {
     "Content-Type": "application/json",
@@ -38,20 +37,18 @@ const refreshUserToken = async (token: string) => {
   }
 };
 
-axios_interceptor.interceptors.request.use(
+axiosInterceptors.interceptors.request.use(
   async (req) => {
-    const session = await getServerSession(authOptions);
+    const user = await getCurrentUser();
 
-    if (session?.user?.accessToken) {
-      req.headers.Authorization = `Bearer ${session.user.accessToken}`;
+    if (user?.accessToken) {
+      req.headers.Authorization = `Bearer ${user?.accessToken}`;
     }
 
-    if (session?.user?.accessToken) {
-      const expired = isExpired(session?.user?.accessToken);
+    if (user?.accessToken) {
+      const expired = isExpired(user?.accessToken);
       if (expired) {
-        const refreshedData = await refreshUserToken(
-          session?.user?.refreshToken,
-        );
+        const refreshedData = await refreshUserToken(user?.refreshToken);
         if (refreshedData.accessToken) {
           req.headers.Authorization = `Bearer ${refreshedData?.accessToken}`;
         }
@@ -63,4 +60,4 @@ axios_interceptor.interceptors.request.use(
   (err) => Promise.reject(err),
 );
 
-export default axios_interceptor;
+export default axiosInterceptors;

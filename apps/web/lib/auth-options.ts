@@ -15,7 +15,7 @@ export const authOptions: NextAuthOptions = {
           type: "password",
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials) {
           return null;
         }
@@ -55,7 +55,7 @@ export const authOptions: NextAuthOptions = {
 
       return Promise.resolve(token);
     },
-    session: async ({ session, token }: { session: Session, token: any }) => {
+    session: async ({ session, token }: { session: Session; token: any }) => {
       if (token) {
         session.user = token.user;
       }
